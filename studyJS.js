@@ -643,3 +643,66 @@ var r = getPrime(arr);
 console.log(r);
 
 console.log(`///////////// sort //////////////////`)
+console.log("sort: default by ASCII; modify the array")
+var arr = ['Google', 'Apple', 'Microsoft'];
+console.log(arr.sort());
+var arr = ['Google', 'apple', 'Microsoft'];
+console.log(arr.sort());
+var arr = [10, 20, 1, 2]
+console.log(arr.sort() + " // sort by ASCII");
+
+function increSort(x,y) {
+    if (x == y)
+        return 0
+    return x > y ? 1 : -1;
+}
+console.log("add self-soft: " + arr.sort(increSort))
+
+var r = arr.sort(function(x,y) {return -increSort(x,y);});
+console.log("add self-soft: " + r);
+
+function increSortString(x,y) {
+    if (x === y)
+        return 0;
+    return x.toLowerCase() > y.toLowerCase() ? 1 : -1;
+}
+var arr = ['Google', 'apple', 'Microsoft'];
+console.log("add self-soft: " + arr.sort(increSortString))
+console.log("add self-soft: " + arr)    // sort: modify the array
+
+console.log(`///////////// Array: other methods //////////////////`)
+console.log("sort: default by ASCII")
+var arr = ['Google', 'apple', 'Microsoft'];
+console.log(arr.every(function(x){
+    return x.length >= 6;
+}));
+console.log(arr.every(function(x){
+    return x.length >= 3;
+}));
+
+function findLower(x) {
+    return x.toLowerCase() == x;
+}
+function findUpper(x) {
+    return x.toUpperCase() == x;
+}
+console.log("findLower(): " + arr.find(findLower));
+console.log("findUpper(): " + arr.find(findUpper));
+
+console.log("findLower() index: " + arr.findIndex(findLower));
+console.log("findUpper() index: " + arr.findIndex(findUpper));
+
+function outputLog(x) {
+    console.log(x)
+}
+var arr = ['Google', 'apple', 'Microsoft'];
+console.log("forEach: default 3 parameters (element, index, array)");
+arr.forEach(console.log)
+console.log("forEach: 1 parameter (element)");
+arr.forEach(outputLog)
+
+console.log(`arr.forEach((u,i) => {console.log(u,i)})`)
+arr.forEach((u,i) => {console.log(u,i)})
+console.log(`arr.forEach(function(u,i){console.log(u,i)})`)
+arr.forEach(function(u,i){console.log(u,i)})
+
