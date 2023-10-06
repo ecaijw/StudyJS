@@ -706,3 +706,199 @@ arr.forEach((u,i) => {console.log(u,i)})
 console.log(`arr.forEach(function(u,i){console.log(u,i)})`)
 arr.forEach(function(u,i){console.log(u,i)})
 
+console.log('////////////////// closure: return high-order function as a result //////////////////////')
+function sum(arr) {
+    return arr.reduce(function(x, y) {
+        return x + y;
+    })
+}
+console.log("sum(): " + sum([1,2,3,4,5]))
+
+function lazySum(arr) {
+    return function() {
+        return arr.reduce(function(x, y) {
+            return x + y;
+        })
+    }
+}
+var f = lazySum([1,2,3,4,5])
+console.log("f(): " + f())
+
+function count() {
+    var arr = [];
+    for (var i =1; i <= 3; i++) {
+        arr.push(function() {
+            return i * i;
+        });
+    }
+    return arr;
+}
+var functions = count();
+var f0 = functions[0];
+var f1 = functions[1];
+var f2 = functions[2];
+console.log(f0())
+console.log(f1())
+console.log(f2())
+
+function count2() {
+    var arr = [];
+    for (var i =1; i <= 3; i++) {
+        var iObj = new Object();
+        iObj.i = i;
+        arr.push(function() {
+            return iObj.i * iObj.i;
+        });
+    }
+    return arr;
+}
+var functions = count2();
+var f0 = functions[0];
+var f1 = functions[1];
+var f2 = functions[2];
+console.log(f0())
+console.log(f1())
+console.log(f2())
+
+console.log("create an anonymous function and execute it to return the internal function")
+function count3() {
+    var arr = [];
+    for (var i =1; i <= 3; i++) {
+        arr.push(
+            function(x) {
+                return function() {
+                    return x * x;
+                }
+            }(i)
+        );
+
+    }
+    return arr;
+}
+var functions = count3();
+var f0 = functions[0];
+var f1 = functions[1];
+var f2 = functions[2];
+console.log(f0())
+console.log(f1())
+console.log(f2())
+
+console.log("closure: encapsulate a private variable")
+function createCounter(init) {
+    var x = init || 0;
+    return { // key : value
+        inc : function() {
+            x++;
+            return x;
+        }
+    }
+}
+
+var c1 = createCounter();
+console.log(c1.inc());
+console.log(c1.inc());
+console.log(c1.inc());
+
+
+var c2 = createCounter(100);
+console.log(c2.inc());
+console.log(c2.inc());
+console.log(c2.inc());
+
+function makePow(n) {
+    return function(x) {
+        return Math.pow(x, n)
+    }
+}
+
+var pow2 = makePow(2);
+var pow3 = makePow(3);
+console.log(pow2(5));
+console.log(pow3(5));
+
+console.log("closure: define calculation operation")
+
+var zero = function(f) {
+    return function(x) {
+        return x;
+    }
+}
+
+var one = function(f) {
+    return function(x) {
+//        console.log("f.name: " + f.name)
+        return f(x)
+    }
+}
+
+function add(n, m) {
+    return function addReturn(f) {
+        return function(x) {
+            console.log(`add(n,m): ${x}, ${f.name}, ${m.name}, ${n.name}`);
+            return m(f)(n(f)(x));
+        }
+    }
+}
+
+function testOutput(x) {
+    console.log("testOutput: " + x);
+    return;
+}
+
+function testOutputWithReturn(x) {
+    console.log("testOutputWithReturn: " + x);
+    return "return of testOutputWithReturn: " + x;
+}
+
+console.log("closure: test zero")
+zero(testOutput)();
+
+console.log("/////////////////// closure: test one")
+console.log(one);
+console.log(one(testOutput));
+console.log(one(testOutput)());
+console.log(one(testOutput)(111));
+console.log(one(testOutputWithReturn)());
+console.log(one(testOutputWithReturn)(111));
+
+console.log("/////////////////// closure: test two")
+var two = add(one, one)
+console.log("console.log(two(testOutput)());")
+console.log(two(testOutput)());
+
+console.log("console.log(two(testOutput)(222));")
+console.log(two(testOutput)(222));
+
+console.log("console.log(two(testOutputWithReturn)(222));")
+console.log(two(testOutputWithReturn)(222));
+
+console.log("/////////////////// closure: test five")
+var five = zero;
+for (var i = 0; i < 5; i++) {
+    five = add(five, one);
+}
+five(testOutput)();
+five(testOutputWithReturn)(555);
+
+
+console.log("closure: test two + one")
+var three = add(add(one, one), one);
+three(testOutput)()
+three(testOutputWithReturn)()
+three(testOutputWithReturn)(333)
+
+console.log("closure: test one + two")
+var three = add(one, add(one, one));
+three(testOutput)()
+three(testOutputWithReturn)()
+three(testOutputWithReturn)(333)
+
+
+console.log("closure: testFunction")
+var testFunction = function(f) {
+    return f()
+}
+console.log(testFunction)
+console.log(testFunction(testOutput))
+//console.log(testFunction(testOutput)())   // TypeError
+//console.log(testFunction(testOutput)("xxx"))
