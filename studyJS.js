@@ -988,3 +988,33 @@ arr.sort((x, y) => {
 })
 
 console.log(arr);
+
+console.log('////////////////// Tagged Template Literals //////////////////////')
+const email = 'xiaoming@example.com'
+const password = 'hello123'
+var sqlstrings = undefined
+function sql(strings, ...exps){
+    sqlstrings = strings
+    console.log(`strings: ${strings}`)
+    console.log(strings)
+    console.log(`SQL: ${strings.join('???')}`)
+    console.log(`SQL parameters: ${JSON.stringify(exps)}`)
+
+    /*
+    strings是一个长度为3的数组：
+    ['SELECT * FROM users WHERE email = ', ' AND password = ', '', raw: Array(3)]
+    3个元素：用每一个“${xxx}”作为分隔，自动生成了一个字符串的元素；数组的结尾加上了一个空字符串。
+    */
+    var result = ""
+    for (var i = 0; i < strings.length - 1; i++) {
+        result = result + strings[i] + exps[i]
+    }
+    console.log("result: " + result)
+
+    return {
+        name: 'XiaoMing',
+        age: 20
+    }
+}
+const result = sql`SELECT * FROM users WHERE email=${email} AND password=${password}`;
+console.log(JSON.stringify(result));
