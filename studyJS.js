@@ -902,3 +902,89 @@ console.log(testFunction)
 console.log(testFunction(testOutput))
 //console.log(testFunction(testOutput)())   // TypeError
 //console.log(testFunction(testOutput)("xxx"))
+
+console.log('////////////////// arrow function //////////////////////')
+var f = function(x) {
+    return x * x;
+}
+console.log(f(5))
+
+var f = x => x * x;
+console.log(f(5))
+
+var f = () => 3.14;
+console.log(f(5))
+
+// use brackets for multiple parameters
+var f = (x, y) => x * x + y * y;
+console.log(f(5, 6))
+
+var f = (x, ...rest) => {
+    var i, sum = x;
+    for (i = 0; i < rest.length; i++) {
+        sum += rest[i]
+    }
+    return sum;
+}
+console.log(f(5, 6, 7, 8, 9))
+
+// use brackets when return object
+var f = x => ({ foo: x})
+console.log(f(5))
+
+/*
+箭头函数看上去是匿名函数的一种简写，
+但实际上，箭头函数和匿名函数有个明显的区别：
+箭头函数内部的this是词法作用域，由上下文确定
+*/
+console.log("arrow function: different this")
+// wrong example
+var obj = {
+    birth : 1990,
+    getAge: function() {
+        // 'this' is bound to correct obj
+        var b = this.birth;
+        console.log("this.birth: " + this.birth)
+
+
+        var fn = function() {
+            // 'this' is bound to window or undefined
+            // runtime error: Uncaught TypeError: Cannot read properties of undefined
+            console.log("this.birth: " + this.birth)
+            return new Date().getFullYear() - this.birth;
+        }
+        return fn();
+    }
+}
+
+// will cause error
+// console.log("obj.getAge(): " + obj.getAge())
+
+// correct example
+var obj = {
+    birth : 1990,
+    getAge: function() {
+        // 'this' is bound to correct obj
+        var b = this.birth;
+        console.log("this.birth: " + this.birth)
+
+
+        // use arrow function: 'this' is bound to window or undefined
+        var fn = () => new Date().getFullYear() - this.birth;
+        return fn();
+    }
+}
+
+// correct
+console.log("obj.getAge(): " + obj.getAge())
+
+
+console.log("use arrow function to simplify parameters for sort()")
+var arr = [10, 20, 1, 2]
+arr.sort((x, y) => {
+//    if (x === y)
+//        return 0;
+    return x > y ? 1 : -1;
+})
+
+console.log(arr);
