@@ -1018,3 +1018,129 @@ function sql(strings, ...exps){
 }
 const result = sql`SELECT * FROM users WHERE email=${email} AND password=${password}`;
 console.log(JSON.stringify(result));
+
+console.log('////////////////// generator //////////////////////')
+console.log('////////////////// fib generator')
+function* foo(x) {
+    yield x + 1;
+    yield x + 2;
+    return x + 3;
+}
+
+var f = foo(4)
+console.log(f.next())   // {value: 5, done: false}
+console.log(f.next())   // {value: 6, done: false}
+console.log(f.next())   // {value: 7, done: false}
+console.log(f.next())   // {value: undefined, done: true}
+console.log(f.next())   // {value: undefined, done: true}
+
+var f = foo(4)
+console.log("f: " + f.next())   // f: [object Object]
+console.log("f: " + f.next())   // f: [object Object]
+console.log("f: " + f.next())   // f: [object Object]
+console.log("f: " + f.next())   // f: [object Object]
+console.log("f: " + f.next())   // f: [object Object]
+
+var f = foo(4)
+console.log("f: " + f.next().value) // f: 5
+console.log("f: " + f.next().value) // f: 6
+console.log("f: " + f.next().value) // f: 7
+console.log("f: " + f.next().value) // f: undefined
+console.log("f: " + f.next().value) // f: undefined
+
+var f = foo(4)
+console.log("f: " + JSON.stringify(f.next())) //
+console.log("f: " + JSON.stringify(f.next())) // done is true; should not call again
+console.log("f: " + JSON.stringify(f.next())) // done is true; should not call again
+console.log("f: " + JSON.stringify(f.next())) // done is true; should not call again
+console.log("f: " + JSON.stringify(f.next())) // done is true; should not call again
+
+console.log('////////////////// fib function: return array')
+// normal function
+function fibFunction(max) {
+    var t;
+    var a = 0;
+    var b = 1;
+    var arr = [0, 1];
+
+//    console.log(max);
+    while (arr.length < max) {
+        [a, b] = [b, a + b];
+        arr.push(b);
+//        console.log(arr.length);
+    }
+    return arr;
+}
+
+console.log("fib: " + fibFunction(5)) // (fib: [object Generator]
+console.log("fib: " + fibFunction(10)) // (fib: [object Generator]
+
+console.log('////////////////// fib generator: yield or return one by one')
+// generator function
+function* fib(max) {
+    var t;
+    var a = 0;
+    var b = 1;
+    var i = 0;
+
+    while (i < max) {
+        yield a;
+        [a, b] = [b, a + b];
+        i++;
+    }
+    return "done = true";
+}
+
+console.log('f.next()')
+var f = fib(5);
+console.log(f.next()); // {value: 0, done: false}
+console.log(f.next());
+console.log(f.next());
+console.log(f.next());
+console.log(f.next()); // {value: 3, done: false}
+console.log(f.next()); // {value: 'done = true', done: true}
+console.log(f.next()); // {value: undefined, done: true}. Question: why sometimes is ""
+console.log(JSON.stringify(f.next())); // {"done":true}
+
+console.log('for (var x of fib(5))')
+for (var x of fib(5)) {
+    console.log(x);
+}
+
+console.log('////////////////// counter generator')
+function* nextCounter() {
+    // local counter; not need a global variable
+    var localCounter = 0;
+//    console.log("localCounter: " + localCounter);
+    while (true) {
+        localCounter++;
+//        console.log("getCounter.next(): " + localCounter)
+        yield localCounter;
+    }
+    return;
+}
+var g = nextCounter();
+console.log("getCounter.next(): " + g.next().value)
+console.log("getCounter.next(): " + g.next().value)
+console.log("getCounter.next(): " + g.next().value)
+
+for (var c of g) {  // continue the g function
+    console.log("c: " + c)
+    if (c >= 6) {
+        break;
+    }
+}
+
+for (var c of nextCounter()) {  // NEW a nextCounter() object
+    console.log("c: " + c)
+    if (c >= 6) {
+        break;
+    }
+}
+
+for (var c of nextCounter()) {  // NEW a nextCounter() object
+    console.log("c: " + c)
+    if (c >= 6) {
+        break;
+    }
+}
