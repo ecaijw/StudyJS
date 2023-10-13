@@ -1144,3 +1144,138 @@ for (var c of nextCounter()) {  // NEW a nextCounter() object
         break;
     }
 }
+
+console.log('////////////////// JS standard objects //////////////////////')
+console.log('////////////////// JS standard objects: Date')
+console.log('typeof(null): ' + typeof(null))
+console.log('typeof(undefined): ' + typeof(undefined))
+console.log('typeof([]): ' + typeof([]))
+console.log('typeof({}): ' + typeof({}))
+
+console.log('typeof(123): ' + typeof(123))
+console.log('typeof(Number(123)): ' + typeof(Number(123)))
+console.log('typeof(new Number(123)): ' + typeof(new Number(123)))
+console.log('new Number(123) == 123: ' + (new Number(123) == 123))
+console.log('new Number(123) === 123: ' + (new Number(123) === 123))
+
+
+console.log('typeof(true): ' + typeof(true))
+console.log('typeof(Boolean(true)): ' + typeof(Boolean(true)))
+console.log('typeof(new Boolean(true)): ' + typeof(new Boolean(true)))
+console.log('new Boolean(true) == true: ' + (new Boolean(true) == true))
+console.log('new Boolean(true) === true: ' + (new Boolean(true) === true))
+
+console.log('new String("string") == "string": ' + (new String("string") == "string"))
+console.log('new String("string") === "string": ' + (new String("string") === "string"))
+
+// 总结一下，有这么几条规则需要遵守： https://www.liaoxuefeng.com/wiki/1022910821149312/1023021722631296
+// 通常不必把任意类型转换为boolean再判断，因为可以直接写if (myVar) {...}；
+// typeof操作符可以判断出number、boolean、string、function和undefined；
+// 判断某个全局变量是否存在用typeof window.myVar === 'undefined'；
+var arr = [1,2,3]
+console.log('typeof(arr): ' + typeof(arr))
+console.log('Array.isArray(arr): ' + Array.isArray(arr))
+console.log('(typeof(window.arr) === "undefined"): ' + (typeof(window.arr) === 'undefined'))
+console.log('(typeof(window.arrNotExist) === "undefined"): ' + (typeof(window.arrNotExist) === 'undefined'))
+
+//console.log('123.toString(): ' + 123.toString())  // invalid or unexpected token
+// see: https://www.jianshu.com/p/71d8d56f60b0
+console.log('123..toString(): ' + 123..toString())  // "123." is a float
+console.log('123   .toString(): ' + 123 .toString())  // "123." is a float
+
+var d = new Date(2015, 5, 19, 20, 15, 30, 123);
+console.log("new Date(2015, 5, 19, 20, 15, 30, 123) (5 is June): " + d)
+var now = new Date()
+var nowMilliSecond = now.getTime()
+// 它表示从1970年1月1日零时整的GMT时区开始的那一刻，到现在的毫秒数
+console.log("now: " + nowMilliSecond)
+console.log("(new Date(nowMilliSecond)): " + (new Date(nowMilliSecond)))
+console.log("locale string: " + d.toLocaleString())
+console.log("UTC string: " + d.toUTCString())
+
+console.log('////////////////// JS standard objects: RegExp')
+function testReg(re, exp) {
+    var ret = re.test(exp);
+    console.log(`re: [${re}]  exp: [${exp}]  ret:[${ret}]`);
+    return ret
+}
+
+var re = /^\d{3}\-\d{3,8}$/;
+var re = new RegExp('^\\d{3}\\-\\d{3,8}$');
+testReg(re, "010-12345")
+testReg(re, "010-12")
+testReg(re, "010-123456789")
+testReg(re, "010-1234x")
+
+console.log('RegExp: split strings')
+function testRegSplitString(re, str) {
+    var ret = str.split(re)
+    console.log(`re: [${re}]  str: [${str}]  ret:[${ret}]`);
+    console.log(JSON.stringify(ret));
+    return ret;
+}
+var re = /[\,\s+]+/
+testRegSplitString(re, 'a,b  c,  d')
+testRegSplitString(re, 'abc,  d')
+testRegSplitString(re, 'abc,,,  d')
+
+testRegSplitString(/\s+/, 'a,b  c,  d')
+
+console.log('RegExp: group with ()')
+function testRegExec(re, exp) {
+    var ret = re.exec(exp)
+    console.log(`re: [${re}]  exp: [${exp}]  ret:[${ret}]  [lastIndex: ${re.lastIndex}]`);
+    return ret;
+}
+re = /^(\d{3})\s*-\s*(\d{3,8})$/
+testRegExec(re, "010-234567")
+testRegExec(re, "010-12345")
+testRegExec(re, "010 - 12345")
+testRegExec(re, "010-12")
+testRegExec(re, "010-123456789")
+testRegExec(re, "010-1234x")
+
+
+console.log('RegExp: match email (TODO)')
+re = /([0-9a-zA-Z\_]+)\@([0-9a-zA-Z\_]+)([.[0-9a-zA-Z\_]+]+)/;
+re = /([0-9a-zA-Z\_]+)\@([0-9a-zA-Z\_]+)\.([0-9a-zA-Z\_]+)/;
+testRegExec(re, 'someone@gmail.com')
+
+re = /([0-9a-zA-Z\_]+)\@([0-9a-zA-Z\_]+)([\.[0-9a-zA-Z\_]+]*)/;
+testRegExec(re, 'someone@gmail.com')
+
+re = /([0-9a-zA-Z\_]+)\@([0-9a-zA-Z\_]+)[\.[0-9a-zA-Z\_]+]*/;
+testRegExec(re, 'someone@gmail.com.cn')
+
+
+var re = /^(0[0-9]|1[0-9]|2[0-3]|[0-9])\:(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|[0-9])\:(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|[0-9])$/;
+testRegExec(re, '19:05:30') // ['19:05:30', '19', '05', '30']
+
+console.log('RegExp: greedy/lazy match')
+// 贪婪匹配 greedy match
+re = /^(\d+)(0*)$/
+testRegExec(re, "1230")
+testRegExec(re, "123000")
+
+re = /^(\d+?)(0*)$/     // add ? for lazy match
+testRegExec(re, "1230")
+testRegExec(re, "123000")
+
+re = /^(\d+?)(0*)(0)$/
+testRegExec(re, "1230")
+testRegExec(re, "123000")
+
+re = /^(\d+?)(0*?)(0*)$/
+testRegExec(re, "1230")
+testRegExec(re, "123000")
+
+console.log('RegExp: global search')
+// 正则表达式还可以指定i标志，表示忽略大小写，m标志，表示执行多行匹配。
+var exp = 'JavaScript, VBScript, JScript and ECMAScript';
+re = /[a-zA-Z]+Script/g
+testRegExec(re, exp) // ret:[JavaScript]  [lastIndex: 10]
+testRegExec(re, exp) // ret:[VBScript]  [lastIndex: 20]
+testRegExec(re, exp)
+testRegExec(re, exp)
+testRegExec(re, exp) // return null, lastIndex: 0
+testRegExec(re, exp) // reset and search again
