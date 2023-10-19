@@ -1279,3 +1279,78 @@ testRegExec(re, exp)
 testRegExec(re, exp)
 testRegExec(re, exp) // return null, lastIndex: 0
 testRegExec(re, exp) // reset and search again
+
+console.log('////////////////// JSON (JavaScript Object Notation) //////////////////////')
+var person = {
+    name : 'Snake',
+    age : 20,
+    tags : ['js', 'web', 'mobile'],
+    code : null
+}
+
+// last parameter: output line by line
+var s = JSON.stringify(person, null, '    ')
+console.log(s)
+
+// only output specified properties
+var s = JSON.stringify(person, ['name', 'age'], '    ')
+console.log(s)
+
+console.log('stringify(person, parseValue, "")')
+function parseValue(key, value) {
+    console.log(`key: ${key}  value: ${value}`)
+    if (key === '') {
+        console.log("all values:  " + JSON.stringify(value))
+    }
+    if ((typeof value) === 'string') {
+        return value.toUpperCase();
+    }
+    else if ((typeof value) === 'number') {
+        return value * 10;
+    }
+    return value;
+}
+
+var s = JSON.stringify(person, parseValue, '')
+console.log(s)
+
+console.log('personWiithtoJSON: return data that should be used by stringify')
+var personWiithtoJSON = {
+    name : 'Snake',
+    age : 20,
+    tags : ['js', 'web', 'mobile'],
+    code : null,
+    toJSON : function() {
+        return {
+            'newName' : 'new name for json',
+            'newAge' : 123456789
+        }
+    }
+}
+
+var s = JSON.stringify(personWiithtoJSON, parseValue, '')
+console.log(s)
+
+console.log('JSON deserialization')
+var jsonObj = JSON.parse('123')
+console.log(JSON.stringify(jsonObj))
+var jsonObj = JSON.parse('true')
+console.log(JSON.stringify(jsonObj))
+var jsonObj = JSON.parse('[1,2,3,true]')
+console.log(JSON.stringify(jsonObj))
+var jsonObj = JSON.parse(`{"newName" : "new name for json"}`)
+console.log(JSON.stringify(jsonObj))
+var jsonObj = JSON.parse(`{"newName" : "new name for json", "age": 123}`)
+console.log(JSON.stringify(jsonObj))
+
+console.log('following is JQuery example, will try later')
+//var url = 'https://api.openweathermap.org/data/2.5/forecast?q=Beijing,cn&appid=800f49846586c3ba6e7052cfc89af16c'
+//$.getJSON(url, function(data) {
+//    var info = {
+//        city : data.city.name,
+//        weather : data.list[0].weather[0].main,
+//        time: data.list[0].dt_txt
+//    }
+//    console.log(info)
+//})
+
