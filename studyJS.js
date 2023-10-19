@@ -1354,3 +1354,43 @@ console.log('following is JQuery example, will try later')
 //    console.log(info)
 //})
 
+console.log('////////////////// JS OOP, prototype. duck typing //////////////////////')
+var Student = {
+    name: 'robot',
+    height : '1.6',
+    run: function() {
+        console.log(this.name + ' is running...')
+    }
+}
+
+var xiaoming  = {
+    name: 'xiaoming'
+}
+console.log('xiaoming.__proto__  = Student;')
+xiaoming.__proto__  = Student;
+
+console.log(JSON.stringify(xiaoming))
+console.log(xiaoming)
+xiaoming.run()
+console.log(xiaoming.height)
+
+console.log('xiaoming.__proto__  = Bird;')
+var Bird = {
+    fly: function() {
+        console.log(this.name + " is flying...")
+    }
+}
+xiaoming.__proto__ = Bird
+console.log(xiaoming)
+//xiaoming.run() // studyJS.js:1385 Uncaught TypeError: xiaoming.run is not a function
+xiaoming.fly()
+console.log(xiaoming.height) // undefined
+
+function createStudent(name) {
+    var ret = Object.create(Student);
+    ret.name = name;
+    return ret;
+}
+xiaoming = createStudent('xiaoming object')
+xiaoming.run()
+console.log('xiaoming.__proto__ == Student: ' + (xiaoming.__proto__ == Student))
