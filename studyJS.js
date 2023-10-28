@@ -1380,6 +1380,7 @@ var Bird = {
         console.log(this.name + " is flying...")
     }
 }
+// only for demo purpose; NOT call __proto__ to change prototype
 xiaoming.__proto__ = Bird
 console.log(xiaoming)
 //xiaoming.run() // studyJS.js:1385 Uncaught TypeError: xiaoming.run is not a function
@@ -1393,4 +1394,95 @@ function createStudent(name) {
 }
 xiaoming = createStudent('xiaoming object')
 xiaoming.run()
-console.log('xiaoming.__proto__ == Student: ' + (xiaoming.__proto__ == Student))
+console.log('xiaoming.__proto__ === Student: ' + (xiaoming.__proto__ === Student))
+
+console.log('////////////////// JS OOP: create an object //////////////////////')
+console.log('constructor')
+function StudentCtor(name) {
+    this.name = name
+    this.hello = function() {
+        console.log('hello: ' + this.name)
+    }
+}
+// if Student is already defined as an object
+// Uncaught TypeError: Student is not a constructor
+// var xiaoming = new Student('xiaoming')
+
+/*
+xiaoming ↘
+xiaohong -→ Student.prototype ----> Object.prototype ----> null
+xiaojun  ↗
+*/
+console.log("prototype chain: xiaoming ----> Student.prototype ----> Object.prototype ----> null")
+var xiaoming = new StudentCtor('xiaoming')
+console.log(xiaoming.name)
+xiaoming.hello()
+console.log("xiaoming.constructor: " + xiaoming.constructor)
+console.log("xiaoming.__proto__ === StudentCtor.prototype: " + (xiaoming.__proto__ === StudentCtor.prototype))
+console.log("xiaoming.__proto__.__proto__ === Object.prototype: " + (xiaoming.__proto__.__proto__ === Object.prototype))
+console.log("xiaoming.__proto__.__proto__.__proto === null: " + (xiaoming.__proto__.__proto__.__proto === null))
+console.log("StudentCtor.__proto__ === Function.prototype: " + (StudentCtor.__proto__ === Function.prototype))
+console.log("StudentCtor.__proto__.__proto__ === Object.prototype: " + (StudentCtor.__proto__.__proto__ === Object.prototype))
+console.log("StudentCtor.__proto__.__proto__.__proto__ === null: " + (StudentCtor.__proto__.__proto__.__proto__ === null))
+console.log("xiaoming.constructor === Student.prototype.constructor: " + (xiaoming.constructor === StudentCtor.prototype.constructor))
+console.log("Object.getPrototypeOf(xiaoming) === Student.prototype: " + (Object.getPrototypeOf(xiaoming) === StudentCtor.prototype))
+console.log("xiaoming instanceof StudentCtor: " + (xiaoming instanceof StudentCtor))
+console.log("xiaoming instanceof Object: " + (xiaoming instanceof Object))
+
+
+console.log("xiaoming.prototype: " + xiaoming.prototype)
+console.log("xiaoming.__proto__: " + JSON.stringify(xiaoming.__proto__))
+
+console.log("hello() is property of xiaoming or xiaohong. xiaoming.hello === xiaohong.hello: false")
+var xiaoming = new StudentCtor('xiaoming')
+var xiaohong = new StudentCtor('xiaohong')
+console.log("xiaoming.hello === xiaohong.hello: " + (xiaoming.hello === xiaohong.hello))
+
+console.log("hello() is property of StudentWithHello. xiaoming.hello === xiaohong.hello: true.")
+function StudentWithHello(name) {
+    this.name = name;
+}
+StudentWithHello.prototype.hello = function() {
+    console.log("hello: " + this.name)
+}
+var xiaoming = new StudentWithHello('xiaoming')
+xiaoming.hello()
+var xiaohong = new StudentWithHello('xiaohong')
+xiaohong.hello()
+console.log("xiaoming.hello === xiaohong.hello: " + (xiaoming.hello === xiaohong.hello))
+
+console.log("Creator Pattern")
+function StudentObj(props) {
+    this.name = props.name || 'unknown'; // default value
+    this.grade = props.grade || 1; // default value
+}
+
+StudentObj.prototype.hello = function() {
+    console.log(`hello: ${this.name} ${this.grade}`)
+}
+
+function createStudentObj(props) {
+    return new StudentObj(props || {});  // default value: {}
+}
+var unknown = createStudentObj();
+var xiaoming = createStudentObj({name:'xiaoming'});
+var xiaohong = createStudentObj({name:'xiaohong', grade:99});
+unknown.hello()
+xiaoming.hello()
+xiaohong.hello()
+console.log("xiaoming.hello === xiaohong.hello: " + (xiaoming.hello === xiaohong.hello))
+
+console.log("practice: Cat")
+function Cat(name) {
+    this.name = name
+}
+Cat.prototype.say = function() {
+    console.log(`Hello, ${this.name}!`)
+    return `Hello, ${this.name}!`
+}
+
+function createCat(name) {
+    return new Cat(name);
+}
+var kitty = createCat('kitty')
+kitty.say()
