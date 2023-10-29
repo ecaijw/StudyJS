@@ -1592,3 +1592,55 @@ console.log("Object.prototype.__proto__ === null: " + (Object.prototype.__proto_
 console.log("Function.__proto__.__proto__.constructor === Object: " + (Function.__proto__.__proto__.constructor === Object))
 console.log("Object.__proto__.__proto__.constructor === Object: " + (Object.__proto__.__proto__.constructor === Object))
 console.log("END: Function and Object")
+
+function TestFunction () {}
+var objTestFunction = new TestFunction();
+console.log("objTestFunction.__proto__ === TestFunction.prototype: " + (objTestFunction.__proto__ === TestFunction.prototype))
+console.log("objTestFunction instanceof TestFunction: " + (objTestFunction instanceof TestFunction))
+console.log("objTestFunction instanceof Object: " + (objTestFunction instanceof Object))
+console.log("objTestFunction.__proto__.__proto__ === Object.prototype: " + (objTestFunction.__proto__.__proto__ === Object.prototype))
+TestFunction.prototype = StudentBase.prototype
+console.log("TestFunction.prototype = StudentBase.prototype")
+console.log("objTestFunction.__proto__ === TestFunction.prototype: " + (objTestFunction.__proto__ === TestFunction.prototype))
+console.log("objTestFunction instanceof TestFunction: " + (objTestFunction instanceof TestFunction))
+console.log("objTestFunction instanceof Object: " + (objTestFunction instanceof Object))
+console.log("objTestFunction.__proto__.__proto__ === Object.prototype: " + (objTestFunction.__proto__.__proto__ === Object.prototype))
+
+function Animal(name) {
+    this.name = name
+}
+
+Animal.prototype.say = function() {
+    console.log("Animal say(): " + this.name)
+}
+
+Animal.prototype.isAnimal = function() {
+    console.log("I am an animal: " + this.name)
+}
+
+function Dog(name) {
+    Animal.call(this, name)
+}
+Dog.prototype.say = function() {
+    console.log("Dog say(): " + this.name)
+}
+
+function inherits(Child, Parent) {
+    var F = function() {}
+    F.prototype = Parent.prototype
+    Child.prototype = new F()
+    Child.prototype.constructor = Child
+}
+
+// it can work, but not recommend to explicitly use __proto__
+function inherits2(Child, Parent) {
+    Child.prototype.__proto__ = Parent.prototype
+}
+
+inherits2(Dog, Animal)
+
+var dog = new Dog('dog')
+dog.say()
+dog.isAnimal()
+console.log("dog instanceof Dog: " + (dog instanceof Dog))
+console.log("dog instanceof Animal: " + (dog instanceof Animal))
