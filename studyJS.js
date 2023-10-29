@@ -1424,8 +1424,11 @@ console.log("xiaoming.__proto__.__proto__.__proto === null: " + (xiaoming.__prot
 console.log("StudentCtor.__proto__ === Function.prototype: " + (StudentCtor.__proto__ === Function.prototype))
 console.log("StudentCtor.__proto__.__proto__ === Object.prototype: " + (StudentCtor.__proto__.__proto__ === Object.prototype))
 console.log("StudentCtor.__proto__.__proto__.__proto__ === null: " + (StudentCtor.__proto__.__proto__.__proto__ === null))
-console.log("xiaoming.constructor === Student.prototype.constructor: " + (xiaoming.constructor === StudentCtor.prototype.constructor))
-console.log("Object.getPrototypeOf(xiaoming) === Student.prototype: " + (Object.getPrototypeOf(xiaoming) === StudentCtor.prototype))
+console.log("Function.prototype.__proto__ === Object.prototype: " + (Function.prototype.__proto__ === Object.prototype))
+console.log("Object.prototype.__proto__ === null: " + (Object.prototype.__proto__ === null))
+
+console.log("xiaoming.constructor === StudentCtor.prototype.constructor: " + (xiaoming.constructor === StudentCtor.prototype.constructor))
+console.log("Object.getPrototypeOf(xiaoming) === StudentCtor.prototype: " + (Object.getPrototypeOf(xiaoming) === StudentCtor.prototype))
 console.log("xiaoming instanceof StudentCtor: " + (xiaoming instanceof StudentCtor))
 console.log("xiaoming instanceof Object: " + (xiaoming instanceof Object))
 
@@ -1486,3 +1489,106 @@ function createCat(name) {
 }
 var kitty = createCat('kitty')
 kitty.say()
+
+console.log('////////////////// JS OOP: prototype inheritance //////////////////////')
+// https://www.liaoxuefeng.com/wiki/1022910821149312/1023021997355072
+function StudentBase(props) {
+    this.name = props.name || 'Unnamed'
+}
+
+StudentBase.prototype.hello = function() {
+    console.log(`Hello, ${this.name}!`)
+}
+
+/*
+before:
+new PrimaryStudent() ----> PrimaryStudent.prototype ----> Object.prototype ----> null
+after:
+new PrimaryStudent() ----> PrimaryStudent.prototype ----> Student.prototype ----> Object.prototype ----> null
+*/
+function PrimaryStudent(props) {
+    StudentBase.call(this, props)
+    this.grade = props.grade || 1;
+}
+
+var ps = new PrimaryStudent({name : 'ps'})
+console.log("Before: ps.hello(), Uncaught TypeError: ps.hello is not a function")
+
+// create a middle object to implement inheritance of StudentBase
+function EmptyFunction() {}
+EmptyFunction.prototype = StudentBase.prototype
+
+PrimaryStudent.prototype = new EmptyFunction()
+PrimaryStudent.prototype.constructor = PrimaryStudent
+
+PrimaryStudent.prototype.getGrade  = function() {
+    return this.grade
+}
+var xiaoming = new PrimaryStudent({
+    name : 'xiaoming',
+    grade : 222
+})
+console.log("START: prototype chain of xiaoming [__proto__]")
+console.log("xiaoming.__proto__ === PrimaryStudent.prototype: " + (xiaoming.__proto__ === PrimaryStudent.prototype))
+console.log("xiaoming.__proto__.__proto__ === StudentBase.prototype: " + (xiaoming.__proto__.__proto__ === StudentBase.prototype))
+console.log("xiaoming.__proto__.__proto__.__proto__ === Object.prototype: " + (xiaoming.__proto__.__proto__.__proto__ === Object.prototype))
+console.log("xiaoming.__proto__.__proto__.__proto__.__proto__ === null: " + (xiaoming.__proto__.__proto__.__proto__.__proto__ === null))
+console.log("END: prototype chain of xiaoming")
+
+console.log("START: prototype chain of xiaoming [prototype.__proto__]")
+console.log("xiaoming.prototype === undefined: " + (xiaoming.prototype === undefined))
+console.log("xiaoming.__proto__ === PrimaryStudent.prototype: " + (xiaoming.prototype === undefined))
+console.log("PrimaryStudent.prototype.__proto__ === StudentBase.prototype: " + (PrimaryStudent.prototype.__proto__ === StudentBase.prototype))
+console.log("StudentBase.prototype.__proto__ === Object.prototype: " + (StudentBase.prototype.__proto__ === Object.prototype))
+console.log("StudentBase.prototype.__proto__ === null: " + (Object.prototype.__proto__ === null))
+console.log("END: prototype chain of xiaoming")
+
+console.log("START: prototype chain of xiaoming [constructor]")
+console.log("xiaoming.constructor === xiaoming.__proto__.constructor: " + (xiaoming.constructor === xiaoming.__proto__.constructor))
+console.log("PrimaryStudent.constructor === Function.constructor: " + (PrimaryStudent.constructor === Function.constructor))
+console.log("StudentBase.constructor === Function.constructor: " + (StudentBase.constructor === Function.constructor))
+console.log("Object.constructor === Function: " + (Object.constructor === Function))
+console.log("Function.constructor === Function: " + (Function.constructor === Function))
+console.log("Function.constructor === Function.__proto__.constructor: " + (Function.constructor === Function.__proto__.constructor))
+console.log("END: prototype chain of xiaoming")
+
+
+console.log("START: prototype of xiaoming related objects [__proto__.constructor]")
+console.log("xiaoming.__proto__.constructor === PrimaryStudent: " + (xiaoming.__proto__.constructor === PrimaryStudent))
+console.log("PrimaryStudent.__proto__.constructor === Function: " + (PrimaryStudent.__proto__.constructor === Function))
+console.log("StudentBase.__proto__.constructor === Function: " + (StudentBase.__proto__.constructor === Function))
+console.log("Object.__proto__.constructor === Function: " + (Object.__proto__.constructor === Function))
+console.log("Function.__proto__.constructor === Function: " + (Function.__proto__.constructor === Function))
+console.log("Object.prototype.constructor === Object: " + (Object.prototype.constructor === Object))
+console.log("END: prototype of xiaoming related objects ")
+
+console.log("START: prototype of xiaoming related objects [__proto__]")
+console.log("PrimaryStudent.__proto__ === Function.prototype: " + (PrimaryStudent.__proto__ === Function.prototype))
+console.log("StudentBase.__proto__ === Function.prototype: " + (StudentBase.__proto__ === Function.prototype))
+console.log("Object.__proto__ === Function.prototype: " + (Object.__proto__ === Function.prototype))
+console.log("Function.__proto__ === Function.prototype: " + (Function.__proto__ === Function.prototype))
+console.log("Function.prototype.__proto__ === Object.prototype: " + (Function.prototype.__proto__ === Object.prototype))
+console.log("Object.prototype.__proto__ === null: " + (Object.prototype.__proto__ === null))
+console.log("END: prototype of xiaoming related objects ")
+
+
+console.log("START: Function and Object")
+//console.log("xiaoming instanceof xiaoming: " + (xiaoming instanceof xiaoming))
+console.log("xiaoming instanceof xiaoming: Uncaught TypeError: Right-hand side of 'instanceof' is not callable")
+console.log("xiaoming instanceof PrimaryStudent: " + (xiaoming instanceof PrimaryStudent))
+console.log("xiaoming instanceof StudentBase: " + (xiaoming instanceof StudentBase))
+console.log("xiaoming instanceof Function: " + (xiaoming instanceof Function))
+console.log("xiaoming instanceof Object: " + (xiaoming instanceof Object))
+
+console.log("StudentBase instanceof StudentBase: " + (StudentBase instanceof StudentBase))
+console.log("StudentBase instanceof Function: " + (StudentBase instanceof Function))
+console.log("StudentBase instanceof Object: " + (StudentBase instanceof Object))
+console.log("Object instanceof Function: " + (Object instanceof Function))
+console.log("Function instanceof Object: " + (Function instanceof Object))
+console.log("Function.__proto__ === Function.prototype: " + (Function.__proto__ === Function.prototype))
+console.log("Function.prototype.__proto__ === Object.prototype: " + (Function.prototype.__proto__ === Object.prototype))
+console.log("Object.__proto__ === Function.prototype: " + (Object.__proto__ === Function.prototype))
+console.log("Object.prototype.__proto__ === null: " + (Object.prototype.__proto__ === null))
+console.log("Function.__proto__.__proto__.constructor === Object: " + (Function.__proto__.__proto__.constructor === Object))
+console.log("Object.__proto__.__proto__.constructor === Object: " + (Object.__proto__.__proto__.constructor === Object))
+console.log("END: Function and Object")
